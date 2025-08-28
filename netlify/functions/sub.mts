@@ -1,4 +1,6 @@
-export default async (request, context) => {
+import type { Config, Context } from "@netlify/functions";
+
+export default async (request: Request, context: Context) => {
     request.headers.set("User-Agent", "mihomo/v1.19.12 (clash.meta)");
     if (request.method !== "GET") {
         return new Response(JSON.stringify({
@@ -26,7 +28,7 @@ export default async (request, context) => {
     );
     // https://metacubex-subconverter-1.zeabur.app/sub?target=clash&url=https%3A%2F%2Fwww.85la.com%2Fwp-content%2Fuploads%2F2025%2F08%2F202508243615kmxj2q.yaml&insert=false&config=https%3A%2F%2Fraw.githubusercontent.com%2FACL4SSR%2FACL4SSR%2Fmaster%2FClash%2Fconfig%2FACL4SSR_Online_Full.ini&filename=85LA&emoji=true&list=false&tfo=false&scv=true&fdn=false&expand=true&sort=false&new_name=true
     // https://metacubex-subconverter-1.zeabur.app/sub?target=clash&url=https%3A%2F%2Fwww.85la.com%2Fwp-content%2Fuploads%2F2025%2F08%2F202508243615kmxj2q.yaml&insert=false&config=https%3A%2F%2Fraw.githubusercontent.com%2FACL4SSR%2FACL4SSR%2Fmaster%2FClash%2Fconfig%2FACL4SSR_Online.ini&filename=85LA&emoji=true&list=false&tfo=false&scv=true&fdn=false&expand=true&sort=false&new_name=true
-    let match = regex.exec(body);
+    let match: RegExpExecArray | RegExpMatchArray | null = regex.exec(body);
     if (!(match && match[1])) {
         return new Response(JSON.stringify({
             code: 404,
