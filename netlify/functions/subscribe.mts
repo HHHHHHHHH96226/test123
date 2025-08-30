@@ -17,8 +17,8 @@ export default async (request: Request, context: Context) => {
                 }
             });
         }
-        let result: Response = await fetch("https://www.85la.com/internet-access/free-network-nodes", request);
-        let body: string = await result.text();
+        let response: Response = await fetch("https://www.85la.com/internet-access/free-network-nodes", request);
+        let body: string = await response.text();
         const current = new Date();
         let regex: RegExp = new RegExp(
             `<a\\s+href="(https://www\\.85la\\.com/\\d+\\.html)">\\s*` +
@@ -41,8 +41,8 @@ export default async (request: Request, context: Context) => {
             });
         }
         console.log(match[1])
-        result = await fetch(match[1], request);
-        body = await result.text();
+        response = await fetch(match[1], request);
+        body = await response.text();
         regex = /<div[^>]*style=[^>]*margin-bottom:\s*20px[^>]*>\s*<h3[^>]*>5\.\s*Clash\.Mihomo\s*订阅地址<\/h3>\s*<p[^>]*><a href="([^"]+)"[^>]*>([^<]+)<\/a><\/p>\s*<\/div>/i;
         match = body.match(regex);
         if (!(match && match[1])) {
@@ -60,7 +60,9 @@ export default async (request: Request, context: Context) => {
         console.log(match[1])
         const subconverter = `https://metacubex-subconverter-1.zeabur.app/sub?target=clash&url=${encodeURI(match[1])}&insert=false&config=https%3A%2F%2Fraw.githubusercontent.com%2FACL4SSR%2FACL4SSR%2Fmaster%2FClash%2Fconfig%2FACL4SSR_Online_Full.ini&filename=85LA&emoji=true&list=false&tfo=false&scv=true&fdn=false&expand=true&sort=false&new_name=true`;
         console.log(subconverter)
-        return await fetch(subconverter, request);
+        response = await fetch(subconverter, request);
+        response.headers.set('profile-web-page-url', match[1]);
+        return response;
     } catch (error) {
         return new Response(JSON.stringify({
             code: 500,
