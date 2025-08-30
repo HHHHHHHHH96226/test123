@@ -17,28 +17,19 @@ export default async (request: Request, context: Context) => {
                 }
             });
         }
-        let response: Response = await fetch("https://www.85la.com/internet-access/free-network-nodes", request);
+        let response: Response = await fetch("https://www.85la.com/internet-access", request);
         let body: string = await response.text();
         const current = new Date();
         let regex: RegExp = new RegExp(
             `<a\\s+href="(https://www\\.85la\\.com/\\d+\\.html)">\\s*` +
-            `${current.getFullYear()}年${current.getMonth() + 1}月${current.getDate()}日[^<]+<\\/a>`,
+            `${current.getFullYear()}年${current.getMonth() + 1}月${current.getDate()}日 免费节点[^<]+<\\/a>`,
             'g'
         );
         // https://metacubex-subconverter-1.zeabur.app/sub?target=clash&url=https%3A%2F%2Fwww.85la.com%2Fwp-content%2Fuploads%2F2025%2F08%2F202508243615kmxj2q.yaml&insert=false&config=https%3A%2F%2Fraw.githubusercontent.com%2FACL4SSR%2FACL4SSR%2Fmaster%2FClash%2Fconfig%2FACL4SSR_Online_Full.ini&filename=85LA&emoji=true&list=false&tfo=false&scv=true&fdn=false&expand=true&sort=false&new_name=true
         // https://metacubex-subconverter-1.zeabur.app/sub?target=clash&url=https%3A%2F%2Fwww.85la.com%2Fwp-content%2Fuploads%2F2025%2F08%2F202508243615kmxj2q.yaml&insert=false&config=https%3A%2F%2Fraw.githubusercontent.com%2FACL4SSR%2FACL4SSR%2Fmaster%2FClash%2Fconfig%2FACL4SSR_Online.ini&filename=85LA&emoji=true&list=false&tfo=false&scv=true&fdn=false&expand=true&sort=false&new_name=true
         let match: RegExpExecArray | RegExpMatchArray | null = regex.exec(body);
         if (!(match && match[1])) {
-            return new Response(JSON.stringify({
-                code: 404,
-                message: "Not Found"
-            }), {
-                status: 404,
-                statusText: 'Not Found',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            throw new Error("Not Found 1000");
         }
         console.log(match[1])
         response = await fetch(match[1], request);
@@ -46,24 +37,21 @@ export default async (request: Request, context: Context) => {
         regex = /<div[^>]*style=[^>]*margin-bottom:\s*20px[^>]*>\s*<h3[^>]*>5\.\s*Clash\.Mihomo\s*订阅地址<\/h3>\s*<p[^>]*><a href="([^"]+)"[^>]*>([^<]+)<\/a><\/p>\s*<\/div>/i;
         match = body.match(regex);
         if (!(match && match[1])) {
-            return new Response(JSON.stringify({
-                code: 404,
-                message: "Not Found"
-            }), {
-                status: 404,
-                statusText: 'Not Found',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            throw new Error("Not Found 1001");
         }
         console.log(match[1])
         const subconverter = `https://metacubex-subconverter-1.zeabur.app/sub?target=clash&url=${encodeURI(match[1])}&insert=false&config=https%3A%2F%2Fraw.githubusercontent.com%2FACL4SSR%2FACL4SSR%2Fmaster%2FClash%2Fconfig%2FACL4SSR_Online_Full.ini&filename=85LA&emoji=true&list=false&tfo=false&scv=true&fdn=false&expand=true&sort=false&new_name=true`;
         console.log(subconverter)
         response = await fetch(subconverter, request);
-        response.headers.set('profile-web-page-url', match[1]);
-        return response;
+        const headers = new Headers(response.headers);
+        headers.set('profile-web-page-url', match[1]);
+        return new Response(response.body, {
+            status: response.status,
+            statusText: response.statusText,
+            headers: headers
+        });
     } catch (error) {
+        console.error(error)
         return new Response(JSON.stringify({
             code: 500,
             message: "Internal Server Error",
