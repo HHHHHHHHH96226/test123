@@ -43,9 +43,8 @@ export default async (request: Request, context: Context) => {
         const subconverter = `https://metacubex-subconverter-1.zeabur.app/sub?target=clash&url=${encodeURI(match[1])}&insert=false&config=https%3A%2F%2Fraw.githubusercontent.com%2FACL4SSR%2FACL4SSR%2Fmaster%2FClash%2Fconfig%2FACL4SSR_Online_Full.ini&filename=85LA&emoji=true&list=false&tfo=false&scv=true&fdn=false&expand=true&sort=false&new_name=true`;
         console.log(subconverter)
         response = await fetch(subconverter, request);
-        let homeURL: URL = new URL(match[1]);
         const headers = new Headers(response.headers);
-        headers.set('profile-web-page-url', `${homeURL.protocol}//${homeURL.hostname}`);
+        headers.set('profile-web-page-url', 'https://www.85la.com/internet-access');
         return new Response(response.body, {
             status: response.status,
             statusText: response.statusText,
